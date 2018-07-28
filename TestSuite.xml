@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<!-- - TestNG Test Suite to run all tests sequentially - parallel="tests"
+	runs each test within all 3 browsers -->
+<suite name="Suite">
+
+    <test name="Testing API">
+        <classes>
+            <class name="tests.testing"/>
+        </classes>
+    </test>
+
+</suite> <!-- Suite -->
