@@ -17,38 +17,38 @@ public class testing {
 
         //With the set baseURI, Assert that it fails
         given().
-                when().
-                get().
-                then().
-                statusCode(404);
+        when().
+        get().
+        then().
+            statusCode(404);
 
         //Add header json, Assert that it fails
         given().
-                header("Accept", "application/json").
-                when().
-                get().
-                then().
-                statusCode(404);
+            header("Accept", "application/json").
+        when().
+        get().
+        then().
+            statusCode(404);
 
         //verify request is successful
         given().
-                param("q", "batman").
-                header("Accept", "application/json").
-                when().
-                get().
-                then().
-                statusCode(200);
+            param("q", "batman").
+            header("Accept", "application/json").
+        when().
+        get().
+        then().
+            statusCode(200);
 
         //verify request can be sent with both q and count
         given().
-                param("q", "batman").
-                param("count", "3").
-                header("Accept", "application/json").
-                when().
-                get().
-                then().
-                statusCode(200).
-                assertThat().contentType("application/json");
+            param("q", "batman").
+            param("count", "3").
+            header("Accept", "application/json").
+        when().
+        get().
+        then().
+            statusCode(200).
+            assertThat().contentType("application/json");
     }
 
 
@@ -62,15 +62,15 @@ public class testing {
         //verify response count
         //Test fails: count Limits number of records in the response.
         given().
-                param("q", "batman").
-                param("count", count).
-                header("Accept", "application/json").
-                when().
-                get().
-                then().
-                    statusCode(200).
-                    assertThat().contentType("application/json").
-                    body("results.size()", equalTo(count));
+            param("q", "batman").
+            param("count", count).
+            header("Accept", "application/json").
+        when().
+        get().
+        then().
+            statusCode(200).
+            assertThat().contentType("application/json").
+            body("results.size()", equalTo(count));
     }
 
 
