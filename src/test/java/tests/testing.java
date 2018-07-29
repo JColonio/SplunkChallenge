@@ -1,13 +1,18 @@
 package tests;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-
-public class testing {
+public class testing extends testBase {
 
     //Test basic URI request requirements (need: header & param)
     @Test
@@ -16,21 +21,26 @@ public class testing {
         RestAssured.baseURI = "https://splunk.mocklab.io/movies";
 
         //With the set baseURI, Assert that it fails
+        //@formatter:off
         given().
         when().
         get().
         then().
             statusCode(404);
+        //@formatter:on
 
         //Add header json, Assert that it fails
+        //@formatter:off
         given().
             header("Accept", "application/json").
         when().
         get().
         then().
             statusCode(404);
+        //@formatter:on
 
         //verify request is successful
+        //@formatter:off
         given().
             param("q", "batman").
             header("Accept", "application/json").
@@ -38,8 +48,10 @@ public class testing {
         get().
         then().
             statusCode(200);
+        //@formatter:on
 
         //verify request can be sent with both q and count
+        //@formatter:off
         given().
             param("q", "batman").
             param("count", "3").
@@ -49,10 +61,11 @@ public class testing {
         then().
             statusCode(200).
             assertThat().contentType("application/json");
+        //@formatter:on
     }
 
 
-    //Test basic URI request requirements (need: header & param)
+    //Test URI request Param: see if count limits the number of records
     @Test
     public void testCountFunction() {
 
@@ -61,6 +74,7 @@ public class testing {
 
         //verify response count
         //Test fails: count Limits number of records in the response.
+        //@formatter:off
         given().
             param("q", "batman").
             param("count", count).
@@ -71,7 +85,48 @@ public class testing {
             statusCode(200).
             assertThat().contentType("application/json").
             body("results.size()", equalTo(count));
+        //@formatter:on
     }
+
+    //Test if any PosterPath are null
+    @Test
+    public void testPosterPathNotNull() {
+
+        Response response = getRequest("https://splunk.mocklab.io/movies");
+        //Get list of all poster_path from response
+        List<String> allPosterPath =  response.jsonPath().getList("results.poster_path");
+        //loop through and verify each poster_path is not null
+        for (String posterPath : allPosterPath){
+            Assert.assertNotNull(posterPath, "poster_path is null");
+        }
+    }
+
+    //Test if any PosterPath are duplicates
+    @Test
+    public void testDupPosterPath() {
+
+        Set<String> dupList = new HashSet<String>();
+        Set<String> uniqueList = new HashSet<String>();
+
+        Response response = getRequest("https://splunk.mocklab.io/movies");
+        //Get list of all poster_path from response
+        List<String> allPosterPath =  response.jsonPath().getList("results.poster_path");
+
+        //loop through each PosterPath and assign to hashset uniqueList
+        //  if the img url already exist then add value to dupList
+        for(String posterPath : allPosterPath) {
+            if (!uniqueList.add(posterPath)) {
+                dupList.add(posterPath);
+            }
+        }
+
+        //if dupList has atleast 1 value this test fails
+        Assert.assertTrue(dupList.isEmpty(), "Duplicates were found");
+
+    }
+
+
+
 
 
 }
