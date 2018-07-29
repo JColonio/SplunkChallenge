@@ -125,8 +125,28 @@ public class testing extends testBase {
 
     }
 
+    @Test
+    public void testMovieTitlePalindrome () {
 
+        String[] words;
+        Set<String> palindromList = new HashSet<String>();
 
+        Response response = getRequest("https://splunk.mocklab.io/movies");
+        //Get list of all poster_path from response
+        List<String> allTitles =  response.jsonPath().getList("results.title");
+
+        //loop through each title
+        for (String title : allTitles) {
+            words = title.split("\\s+");
+            for (int i = 0; i < words.length; i++) {
+                words[i] = words[i].replaceAll("[^\\w]", "");
+                if (isPalindrome(words[i])) {
+                    palindromList.add(words[i]);
+                }
+            }
+        }
+        Assert.assertTrue(palindromList.size() > 0, "Not one palindrome was found");
+    }
 
 
 }

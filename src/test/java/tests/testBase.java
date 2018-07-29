@@ -20,4 +20,24 @@ public class testBase {
                     response();
     }
 
+    public boolean isPalindrome(String text) {
+
+        int length = text.length();
+
+        // If the string only has 1 char or is empty
+        //      single letters, numbers, and empty strings are Palindrome
+        // If word has already been processed to this point,
+        //      all letters match and only one left
+        if (length < 2)
+            return true;
+        else {
+            // Check opposite ends of the string for equality
+            if (text.charAt(0) != text.charAt(length - 1))
+                return false;
+                // Function call for string with the two ends snipped off
+            else
+                return isPalindrome(text.substring(1, length - 1));
+        }
+    }
+
 }
