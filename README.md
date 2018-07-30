@@ -8,7 +8,7 @@ The project is testing the API library, as is, and should be expanded to sending
 
 Everyone is welcomed to utilize this project as a starting point. When possible, please reference this repository. This project was used for a coding challenge, however, whether out not I earn the job I will be expanding this project.
 
-To utilize the project, you must use Intellij (free version is sufficient). Remember to enable maven import to ensure all libraries are updated.
+To utilize the project, you must use Intellij (free version is sufficient). Remember to enable maven import to ensure all libraries are updated. You can run the tests by executing the TestNG TestSuite.xml file or via Maven compiler > Test.
 
 ## Areas To Improve
 
