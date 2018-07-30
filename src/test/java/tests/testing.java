@@ -219,4 +219,23 @@ public class testing extends testBase {
         Assert.assertTrue(count <= 7, "There is more than 7 movies with a genre_id sum of 400");
     }
 
+
+    //Test for title within title
+    @Test
+    public void testDupMovieTitle() {
+
+        Set<String> dupList = new HashSet<String>();
+        Set<String> uniqueList = new HashSet<String>();
+
+        Response response = getRequest("https://splunk.mocklab.io/movies");
+        //Get list of all poster_path from response
+        List<String> allPosterPath = response.jsonPath().getList("results.title");
+
+        //loop
+
+        //if dupList has atleast 1 value this test fails
+        Assert.assertTrue(dupList.size() >= 2, "At least two titles within titles have been found");
+
+    }
+
 }
