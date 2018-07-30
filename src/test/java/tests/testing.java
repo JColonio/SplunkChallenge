@@ -5,7 +5,10 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -157,32 +160,63 @@ public class testing extends testBase {
         boolean result = false;
 
         for (int i = 1; i < allGenreIds.size(); i++) {
-            String previous = Collections.singleton(allGenreIds.get(i - 1)).toString().replaceAll("\\[", "").replaceAll("\\]","");;
-            String next = Collections.singleton(allGenreIds.get(i)).toString().replaceAll("\\[", "").replaceAll("\\]","");;
+            String previous = Collections.singleton(allGenreIds.get(i - 1)).toString().replaceAll("\\[", "").replaceAll("\\]", "");
+            ;
+            String next = Collections.singleton(allGenreIds.get(i)).toString().replaceAll("\\[", "").replaceAll("\\]", "");
+            ;
 
             //if the first point has values & the 2nd pointer is empty
             //      items are not sorted. Failed
-            if ( (previous.length() > 0 )&&(next.length() == 0) ){
+            if ((previous.length() > 0) && (next.length() == 0)) {
                 result = false;
                 break;
             }
             //else if both are empty, check sorting by ids
-            else if ( (previous.length() == 0 )&&( next.length() == 0 ) ) {
-                if (allIds.get(i-1).compareTo(allIds.get(i)) < 0) {
+            else if ((previous.length() == 0) && (next.length() == 0)) {
+                if (allIds.get(i - 1).compareTo(allIds.get(i)) < 0) {
                     result = false;
                     break;
-                }
-                else {
+                } else {
                     result = true;
                 }
-            }
-            else {
+            } else {
                 result = true;
             }
         }
 
         Assert.assertTrue(result, "list is not sorted by gener_id or ids");
 
+    }
+
+    @Test
+    public void testSumGenreIds() {
+
+        Response response = getRequest("https://splunk.mocklab.io/movies");
+        //Get list of all poster_path from response
+        List<String> allGenreIds = response.jsonPath().getList("results.genre_ids");
+        int count = 0;
+
+        //loop through each title
+        for (int i = 0; i < allGenreIds.size(); i++) {
+
+            String[] cleanGenreids = Collections.singleton(allGenreIds.get(i)).toString().replaceAll("[\\[\\]\\(\\)]", "").split(",");
+
+            int[] numbers = new int[cleanGenreids.length];
+
+            for (int n = 0; n < numbers.length; n++) {
+                if (!cleanGenreids[n].trim().isEmpty()) {
+                    numbers[n] = Integer.parseInt(cleanGenreids[n].trim());
+                }
+            }
+
+            int sumValue = getArraySum(numbers);
+
+            if (sumValue > 400) {
+                count += 1;
+            }
+        }
+
+        Assert.assertTrue(count <= 7, "There is more than 7 movies with a genre_id sum of 400");
     }
 
 }
