@@ -7,17 +7,17 @@ import static io.restassured.RestAssured.given;
 
 public class testBase {
 
-    public static Response getRequest (String endpoint) {
+    public static Response getRequest(String endpoint) {
 
         return given().
-                    param("q", "batman").
-                    header("Accept", "application/json").
+                param("q", "batman").
+                header("Accept", "application/json").
                 when().
                 get(endpoint).
                 then().
-                    contentType(ContentType.JSON).
+                contentType(ContentType.JSON).
                 extract().
-                    response();
+                response();
     }
 
     public boolean isPalindrome(String text) {
@@ -40,5 +40,12 @@ public class testBase {
         }
     }
 
+    public int getArraySum(int[] array) {
+        int sum = 0;
+        for (int value : array) {
+            sum += value;
+        }
+        return sum;
+    }
 
 }
